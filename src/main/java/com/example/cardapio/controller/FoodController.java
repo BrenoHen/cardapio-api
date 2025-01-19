@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("food")
@@ -21,7 +22,6 @@ public class FoodController {
     public void saveFood(@RequestBody FoodRequestDTO data){
         Food foodData = new Food(data);
         foodRepository.save(foodData);
-        return;
     }
 
     @GetMapping
@@ -29,4 +29,22 @@ public class FoodController {
         List<FoodResponseDTO> foodList = foodRepository.findAll().stream().map(FoodResponseDTO::new).toList();
         return foodList;
     }
+
+    @GetMapping("/{id}")
+    public Optional<Food> getById(@PathVariable(value = "id") Long id){
+        return foodRepository.findById(id);
+    }
+
+    @DeleteMapping
+    public void deleteFood(@RequestBody FoodResponseDTO data){
+        Food foodData = new Food(data.id(), data.title(), data.image(), data.price());
+        foodRepository.delete((foodData));
+    }
+
+    @PutMapping
+    public void updateFood(@RequestBody FoodResponseDTO data){
+        Food foodData = new Food(data.id(), data.title(), data.image(), data.price());
+        foodRepository.save((foodData));
+    }
+
 }
